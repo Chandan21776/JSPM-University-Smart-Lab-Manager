@@ -255,39 +255,155 @@
   .footer-bottom{ padding:16px 0 22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
   .footer-bottom p{ margin:0; font-size:11.5px; color:#8b96b5; }
   .footer-bottom .app-tag{ font-size:11px; color:#8b96b5; background:rgba(255,255,255,.06); padding:4px 10px; border-radius:999px; }
+
+  /* ---------- AI Assistant (agentic chatbot + voice) ---------- */
+  #aiFab{
+    position:fixed; bottom:24px; right:24px; z-index:150;
+    width:60px; height:60px; border-radius:50%; border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--maroon) 0%, var(--maroon-2) 55%, var(--gold) 130%);
+    box-shadow:0 10px 28px -6px rgba(138,21,56,.55), 0 2px 8px rgba(0,0,0,.2);
+    display:flex; align-items:center; justify-content:center; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  #aiFab:hover{ transform:translateY(-2px) scale(1.04); box-shadow:0 14px 34px -6px rgba(138,21,56,.65); }
+  #aiFab svg{ width:26px; height:26px; }
+  #aiFab .pulse-ring{
+    position:absolute; inset:-6px; border-radius:50%; border:2px solid var(--gold);
+    opacity:0; animation:none;
+  }
+  #aiFab.listening .pulse-ring{ opacity:1; animation:pulseRing 1.4s ease-out infinite; }
+  @keyframes pulseRing{ 0%{ transform:scale(.85); opacity:.9;} 100%{ transform:scale(1.35); opacity:0;} }
+  #aiFabBadge{
+    position:absolute; top:-3px; right:-3px; width:16px; height:16px; border-radius:50%;
+    background:var(--ok); border:2px solid #fff; display:none;
+  }
+  #aiFabBadge.show{ display:block; }
+
+  #aiPanel{
+    position:fixed; bottom:96px; right:24px; z-index:150; width:390px; max-width:calc(100vw - 32px);
+    height:580px; max-height:calc(100vh - 140px); background:var(--card); border-radius:18px;
+    box-shadow:0 24px 60px -12px rgba(15,20,35,.4), 0 4px 16px rgba(0,0,0,.12);
+    display:none; flex-direction:column; overflow:hidden; border:1px solid var(--line);
+  }
+  #aiPanel.show{ display:flex; animation:aiPop .2s ease; }
+  @keyframes aiPop{ from{ opacity:0; transform:translateY(10px) scale(.97);} to{ opacity:1; transform:none;} }
+
+  .ai-head{
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color:#fff;
+    padding:14px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0;
+  }
+  .ai-head .ai-avatar{
+    width:34px; height:34px; border-radius:10px; background:rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .ai-head .ai-title{ font-family:'Sora'; font-weight:700; font-size:13.5px; line-height:1.2; }
+  .ai-head .ai-sub{ font-size:11px; color:#c7d0e6; display:flex; align-items:center; gap:5px; }
+  .ai-head .ai-sub .dot{ width:6px; height:6px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 2px rgba(255,255,255,.2); }
+  .ai-head-actions{ margin-left:auto; display:flex; gap:6px; }
+  .ai-icon-btn{
+    width:28px; height:28px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.06);
+    color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px;
+  }
+  .ai-icon-btn:hover{ background:rgba(255,255,255,.15); }
+  .ai-icon-btn.on{ background:var(--gold); color:var(--navy); border-color:var(--gold); }
+
+  .ai-mode-row{ display:flex; gap:6px; padding:10px 12px 0; flex-shrink:0; }
+  .ai-mode-btn{
+    flex:1; text-align:center; font-size:11px; font-weight:700; padding:6px 4px; border-radius:8px;
+    border:1px solid var(--line); background:var(--bg); color:var(--ink-soft); cursor:pointer;
+  }
+  .ai-mode-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+
+  .ai-suggest-row{ display:flex; gap:7px; padding:10px 12px 0; flex-wrap:wrap; flex-shrink:0; max-height:64px; overflow-y:auto; }
+  .ai-chip{
+    font-size:11px; font-weight:600; color:var(--navy-2); background:#eef1f9; border:1px solid var(--line);
+    border-radius:999px; padding:6px 11px; cursor:pointer; white-space:nowrap;
+  }
+  .ai-chip:hover{ background:#e2e7f5; }
+
+  .ai-body{ flex:1; overflow-y:auto; padding:14px 14px 6px; display:flex; flex-direction:column; gap:12px; }
+  .ai-msg{ display:flex; gap:8px; max-width:92%; }
+  .ai-msg.user{ align-self:flex-end; flex-direction:row-reverse; }
+  .ai-msg .bubble-avatar{
+    width:24px; height:24px; border-radius:7px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;
+  }
+  .ai-msg.bot .bubble-avatar{ background:var(--navy); color:var(--gold-light); }
+  .ai-msg.user .bubble-avatar{ background:var(--gold-light); color:#6b4e00; }
+  .ai-bubble{
+    padding:9px 12px; border-radius:13px; font-size:12.8px; line-height:1.5;
+  }
+  .ai-msg.bot .ai-bubble{ background:var(--bg); color:var(--ink); border-bottom-left-radius:4px; }
+  .ai-msg.user .ai-bubble{ background:var(--maroon); color:#fff; border-bottom-right-radius:4px; }
+  .ai-bubble .action-note{
+    display:inline-flex; align-items:center; gap:5px; margin-top:7px; font-size:10.5px; font-weight:700;
+    color:var(--ok); background:var(--ok-bg); padding:3px 8px; border-radius:6px;
+  }
+  .ai-bubble .kb-tag{
+    display:inline-flex; align-items:center; gap:5px; margin-top:7px; font-size:10.5px; font-weight:700;
+    color:#6b4e00; background:var(--gold-light); padding:3px 8px; border-radius:6px;
+  }
+  .ai-typing{ display:flex; gap:4px; padding:4px 2px; }
+  .ai-typing span{ width:6px; height:6px; border-radius:50%; background:var(--ink-soft); opacity:.5; animation:aiTyping 1s infinite; }
+  .ai-typing span:nth-child(2){ animation-delay:.15s; }
+  .ai-typing span:nth-child(3){ animation-delay:.3s; }
+  @keyframes aiTyping{ 0%,60%,100%{ transform:translateY(0); opacity:.4;} 30%{ transform:translateY(-4px); opacity:1;} }
+
+  .ai-input-row{
+    display:flex; align-items:center; gap:8px; padding:10px 12px; border-top:1px solid var(--line); flex-shrink:0; background:#fff;
+  }
+  .ai-input-row input{
+    flex:1; border:1px solid var(--line); border-radius:999px; padding:9px 14px; font-size:12.8px; outline:none;
+  }
+  .ai-input-row input:focus{ border-color:var(--gold); }
+  .ai-mic-btn, .ai-send-btn{
+    width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ai-mic-btn{ background:var(--bg); color:var(--maroon); border:1px solid var(--line); }
+  .ai-mic-btn:hover{ background:var(--line); }
+  .ai-mic-btn.rec{ background:var(--bad); color:#fff; border-color:var(--bad); animation:micPulse 1.1s infinite; }
+  @keyframes micPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(192,41,63,.45);} 50%{ box-shadow:0 0 0 7px rgba(192,41,63,0);} }
+  .ai-send-btn{ background:var(--maroon); color:#fff; }
+  .ai-send-btn:hover{ background:var(--maroon-2); }
+
+  .ai-listen-banner{
+    display:none; align-items:center; gap:8px; padding:7px 14px; font-size:11.5px; color:#6b4e00;
+    background:var(--gold-light); flex-shrink:0;
+  }
+  .ai-listen-banner.show{ display:flex; }
+  .ai-listen-banner .bars{ display:flex; gap:2px; align-items:flex-end; height:12px; }
+  .ai-listen-banner .bars i{ width:2.5px; background:#6b4e00; border-radius:2px; animation:aiBars .8s infinite ease-in-out; }
+  .ai-listen-banner .bars i:nth-child(1){ height:5px; animation-delay:0s; }
+  .ai-listen-banner .bars i:nth-child(2){ height:11px; animation-delay:.15s; }
+  .ai-listen-banner .bars i:nth-child(3){ height:7px; animation-delay:.3s; }
+  .ai-listen-banner .bars i:nth-child(4){ height:12px; animation-delay:.45s; }
+  @keyframes aiBars{ 0%,100%{ transform:scaleY(.4);} 50%{ transform:scaleY(1);} }
+
+  @media(max-width:480px){
+    #aiPanel{ right:12px; left:12px; width:auto; bottom:90px; }
+    #aiFab{ right:16px; bottom:16px; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <svg class="crest" viewBox="0 0 100 100">
-    <img points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
+
+   <img points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
     <img points="50,4 92,20 92,55 50,96" fill="rgba(0,0,0,0.08)"/>
 
     <img class="fit-picture" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiV_jBGtofIvLaKhPTD0NZnbNMB5bv5pTV4E-XrG5nKQ&s=10" alt="JSPM..."/>
+    <!-- <polygon points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
+    <polygon points="50,4 92,20 92,55 50,96" fill="rgba(0,0,0,0.08)"/> -->
 
-    
     <line x1="50" y1="4" x2="50" y2="96" stroke="#8a1538" stroke-width="2"/>
     <line x1="8" y1="50" x2="92" y2="50" stroke="#8a1538" stroke-width="2"/>
     <circle cx="50" cy="50" r="12" fill="#152238"/>
     <text x="50" y="55" text-anchor="middle" font-size="14" fill="#f2d98a" font-family="Sora" font-weight="800"></text>
   </svg>
 
-<div class="modal fade" id="homePopupModal" tabindex="-1" aria-labelledby="homePopupModalLabel" style="display: none; z-index: 99999;" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 bg-transparent position-relative">
-
-            <!-- Close Button -->
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 bg-white rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1055;"></button>
-
-            <!-- Image -->
-            <img src="/assets/images/resource/jspm-center-2026.webp" alt="JSPM Center 2026" class="img-fluid rounded">
-        </div>
-    </div>
-</div>
-
   <div class="brand-block">
-    <div class="brand-name">JSPM University Pune SmartLab Manager</div>
+    <div class="brand-name">JSPM University Pune · SmartLab Manager</div>
     <div class="brand-sub">JSPM University · Wagholi Campus</div>
   </div>
   <div class="header-right">
@@ -296,8 +412,8 @@
       <select id="roleSelect" onchange="setRole(this.value)">
         <option value="superadmin">Super Admin</option>
         <option value="incharge">Lab Incharge</option>
+        <option value="labassistant">Lab Assistant</option>
         <option value="hod">HOD (Read-only)</option>
-        <option value="hod">Lab Assistant</option>
       </select>
     </div>
     <div class="user-chip">
@@ -305,6 +421,22 @@
     </div>
   </div>
 </header>
+
+<!-- Home popup modal: kept as a simple self-contained overlay (no Bootstrap dependency,
+     since none is loaded in this prototype). Hidden by default; hook up trigger + real
+     image path when wiring this into the live site. -->
+<div class="overlay" id="homePopupOverlay">
+  <div class="modal" style="max-width:640px; padding:0; overflow:hidden;">
+    <div style="position:relative;">
+      <button class="close-btn" style="position:absolute; top:10px; right:10px; background:#fff;" onclick="closeHomePopup()">✕</button>
+      <div style="padding:40px 24px; text-align:center; color:var(--ink-soft); background:var(--bg);">
+        <div style="font-size:34px; margin-bottom:8px;">🖼️</div>
+        Announcement image placeholder — point this at your real banner
+        (e.g. <code class="mono">/assets/images/resource/jspm-center-2026.webp</code>) when deploying.
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav class="tabs" id="tabBar"></nav>
 
@@ -418,16 +550,14 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
+        <svg viewBox="0 0 100 100">
 
-         <svg class="crest" viewBox="0 0 100 100">
-    <img points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
+<img points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
     <img points="50,4 92,20 92,55 50,96" fill="rgba(0,0,0,0.08)"/>
 
     <img class="fit-picture" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF83hZS6jWmwAn70X7kqJ_c3mZ2LVk88jyGvAGuqs8Yph31dwUGD1qXuM1&s=10" alt="JSPM..."/>
 
-
-        <!-- <svg viewBox="0 0 100 100">
-          <polygon points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
+          <!-- <polygon points="50,4 92,20 92,55 50,96 8,55 8,20" fill="#f2d98a" stroke="#c99a2e" stroke-width="2"/>
           <polygon points="50,4 92,20 92,55 50,96" fill="rgba(0,0,0,0.15)"/> -->
 
           <line x1="50" y1="4" x2="50" y2="96" stroke="#8a1538" stroke-width="2"/>
@@ -513,6 +643,52 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ---------- AI ASSISTANT: agentic chatbot + two-way voice + university FAQ ---------- -->
+<button id="aiFab" onclick="toggleAiPanel()" title="Ask SmartLab Assistant">
+  <span class="pulse-ring"></span>
+  <span id="aiFabBadge"></span>
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a5 5 0 00-5 5v4a5 5 0 0010 0V7a5 5 0 00-5-5z" fill="#fff"/>
+    <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.93V20H9a1 1 0 100 2h6a1 1 0 100-2h-2v-2.07A7 7 0 0019 11z" fill="#fff"/>
+  </svg>
+</button>
+
+<div id="aiPanel">
+  <div class="ai-head">
+    <div class="ai-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 00-5 5v4a5 5 0 0010 0V7a5 5 0 00-5-5z" fill="#f2d98a"/><path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.93V20H9a1 1 0 100 2h6a1 1 0 100-2h-2v-2.07A7 7 0 0019 11z" fill="#f2d98a"/></svg>
+    </div>
+    <div>
+      <div class="ai-title">SmartLab AI Assistant</div>
+      <div class="ai-sub"><span class="dot"></span>Agentic mode · acts on lab data &amp; answers admissions FAQs</div>
+    </div>
+    <div class="ai-head-actions">
+      <button class="ai-icon-btn" id="voiceOutToggle" onclick="toggleVoiceOut()" title="Toggle spoken replies">🔊</button>
+      <button class="ai-icon-btn" onclick="toggleAiPanel()" title="Close">✕</button>
+    </div>
+  </div>
+
+  <div class="ai-mode-row">
+    <button class="ai-mode-btn active" id="modeOpsBtn" onclick="setAiMode('ops')">🖥️ Lab Operations</button>
+    <button class="ai-mode-btn" id="modeUniBtn" onclick="setAiMode('uni')">🎓 University FAQ</button>
+  </div>
+
+  <div class="ai-suggest-row" id="aiSuggestRow"></div>
+
+  <div class="ai-body" id="aiBody"></div>
+
+  <div class="ai-listen-banner" id="listenBanner">
+    <div class="bars"><i></i><i></i><i></i><i></i></div>
+    <span id="listenBannerText">Listening… speak now</span>
+  </div>
+
+  <div class="ai-input-row">
+    <button class="ai-mic-btn" id="micBtn" onclick="toggleMic()" title="Speak your request">🎤</button>
+    <input type="text" id="aiInput" placeholder="Ask or type a command…" onkeydown="if(event.key==='Enter')sendAiMessage()">
+    <button class="ai-send-btn" onclick="sendAiMessage()" title="Send">➤</button>
+  </div>
+</div>
+
 <script>
 /* ---------------- MOCK DATA MODEL (mirrors the design-doc schema) ---------------- */
 
@@ -589,11 +765,13 @@ const reportTypes = [
 /* ---------------- ROLE / TAB CONFIG ---------------- */
 
 const roleConfig = {
-  superadmin: { label:'Super Admin', init:'SA', tabs:['dashboard','structure','labs','complaints','requirements','reports'], note:null },
-  incharge:   { label:'Lab Incharge', init:'LI', tabs:['labs','complaints','reports'],
-                note:'Lab Incharge view — showing only labs assigned to you (Programming Lab-1 &amp; 2). You can update assets, log complaints, and submit daily reports.' },
-  hod:        { label:'HOD', init:'HOD', tabs:['dashboard','complaints','reports'],
-                note:'HOD view is read-only. You can review reports, complaints, and asset status, but cannot edit records or approve purchases directly.' },
+  superadmin:   { label:'Super Admin', init:'SA', tabs:['dashboard','structure','labs','complaints','requirements','reports'], note:null },
+  incharge:     { label:'Lab Incharge', init:'LI', tabs:['labs','complaints','reports'],
+                  note:'Lab Incharge view — showing only labs assigned to you (Programming Lab-1 &amp; 2). You can update assets, log complaints, and submit daily reports.' },
+  labassistant: { label:'Lab Assistant', init:'LA', tabs:['labs','complaints'],
+                  note:'Lab Assistant view — you can log complaints and submit the daily lab report for your assigned lab, but can\'t edit asset specs or approve purchases.' },
+  hod:          { label:'HOD', init:'HOD', tabs:['dashboard','complaints','reports'],
+                  note:'HOD view is read-only. You can review reports, complaints, and asset status, but cannot edit records or approve purchases directly.' },
 };
 let currentRole = 'superadmin';
 let currentTab = 'dashboard';
@@ -640,6 +818,10 @@ function showTab(tab){
   if(tab==='reports') renderReports();
 }
 
+/* ---------------- HOME POPUP (vanilla JS, no Bootstrap needed) ---------------- */
+function closeHomePopup(){ document.getElementById('homePopupOverlay').classList.remove('show'); }
+function openHomePopup(){ document.getElementById('homePopupOverlay').classList.add('show'); }
+
 /* ---------------- DASHBOARD ---------------- */
 
 function renderDashboard(){
@@ -668,7 +850,6 @@ function renderDashboard(){
       <div class="label">${label}</div>
     </div>`).join('');
 
-  // working vs non-working per department
   const workBars = document.getElementById('workBars');
   workBars.innerHTML = departments.map(d=>{
     const dLabs = Object.entries(labDetails).filter(([name])=> structure[d.id].floors.some(f=>f.rooms.some(r=>r.labs.includes(name))));
@@ -764,6 +945,7 @@ function toggleNode(el){
 function renderLabs(){
   let names = Object.keys(labDetails);
   if(currentRole==='incharge') names = ['Programming Lab-1','Programming Lab-2'];
+  if(currentRole==='labassistant') names = ['Programming Lab-1'];
   const grid = document.getElementById('labGrid');
   grid.innerHTML = names.map(name=>{
     const l = labDetails[name];
@@ -842,6 +1024,7 @@ function renderComplaints(){
   const prioF = document.getElementById('filterPriority').value;
   let rows = complaints.filter(c=> (statusF==='all'||c.status===statusF) && (prioF==='all'||c.priority===prioF) );
   if(currentRole==='incharge') rows = rows.filter(c=>['Programming Lab-1','Programming Lab-2'].includes(c.lab));
+  if(currentRole==='labassistant') rows = rows.filter(c=>c.lab==='Programming Lab-1');
   const body = document.getElementById('complaintBody');
   document.getElementById('complaintEmpty').style.display = rows.length ? 'none':'block';
   body.innerHTML = rows.map(c=>{
@@ -869,7 +1052,7 @@ function advanceComplaint(id){
 function renderRequirements(){
   const grid = document.getElementById('reqGrid');
   grid.innerHTML = purchaseRequests.map(r=>`
-    <div class="lab-card" style="cursor:default;" onmouseover="" >
+    <div class="lab-card" style="cursor:default;">
       <div class="top">
         <div><h4>${r.item}</h4><div class="code">${r.dept} Department · Qty ${r.qty}</div></div>
       </div>
@@ -911,7 +1094,361 @@ function toast(msg){
     if(saved && saved.value) complaints = JSON.parse(saved.value);
   }catch(e){ /* first run, no saved data yet */ }
   setRole('superadmin');
+  initAiAssistant();
 })();
+
+/* =====================================================================
+   AGENTIC AI ASSISTANT — chatbot with real actions on app state, PLUS a
+   university admissions/info FAQ knowledge base, PLUS two-way voice:
+   speech-to-text input AND text-to-speech output. All processing runs
+   locally in-browser (Web Speech API) — no external key needed, so this
+   works the moment the file opens.
+
+   NOTE ON THE UNIVERSITY FAQ CONTENT: the answers below reflect general,
+   publicly reported information about JSPM University (programs offered,
+   typical durations, facilities, admission routes) as a realistic
+   starting knowledge base. Figures like fees and placement packages
+   change every admission cycle — swap in the official current numbers
+   from jspmuni.ac.in / the admissions office before using this live.
+   ===================================================================== */
+
+let aiPanelOpen = false;
+let voiceOutEnabled = true;
+let recognizer = null;
+let isListening = false;
+let aiMode = 'ops'; // 'ops' = lab operations, 'uni' = university FAQ
+
+const aiSuggestions = {
+  ops: [
+    ['Dashboard summary','Show dashboard summary'],
+    ['Pending complaints','Show pending complaints'],
+    ['Open a lab','Open Networking Lab'],
+    ['Warranty check','Any assets under warranty expiry?'],
+  ],
+  uni: [
+    ['Courses offered','What courses does JSPM University offer?'],
+    ['Higher study options','What are my higher study options after graduation?'],
+    ['Education loan','How do I get an education loan for this university?'],
+    ['Campus locations','Where is JSPM University located?'],
+    ['Course duration','How long are the degree programs?'],
+    ['Facilities available','What facilities are available on campus?'],
+    ['Admission process','How do I apply and what entrance exams are needed?'],
+    ['Placements','Tell me about placements and top recruiters'],
+  ]
+};
+
+function initAiAssistant(){
+  renderAiSuggestions();
+  aiSay("Namaste! I'm your SmartLab AI Assistant — two modes in one: <b>Lab Operations</b> (I can act on dashboards, labs, and complaints) and <b>University FAQ</b> (courses, admissions, loans, facilities, locations). Switch modes above, type or use the mic 🎙️, and ask away.", []);
+  setupSpeechRecognition();
+}
+
+function setAiMode(mode){
+  aiMode = mode;
+  document.getElementById('modeOpsBtn').classList.toggle('active', mode==='ops');
+  document.getElementById('modeUniBtn').classList.toggle('active', mode==='uni');
+  renderAiSuggestions();
+  if(mode==='uni'){
+    aiSay("You're in University FAQ mode now — ask me about courses, higher study, education loans, campus locations, course duration, facilities, admissions, or placements.");
+  } else {
+    aiSay("Back to Lab Operations mode — ask me to open a lab, check the dashboard, file or advance a complaint, or check reports.");
+  }
+}
+
+function renderAiSuggestions(){
+  const row = document.getElementById('aiSuggestRow');
+  row.innerHTML = aiSuggestions[aiMode].map(([label,q])=>`<span class="ai-chip" onclick="sendQuick(${JSON.stringify(q)})">${label}</span>`).join('');
+}
+
+function toggleAiPanel(){
+  aiPanelOpen = !aiPanelOpen;
+  document.getElementById('aiPanel').classList.toggle('show', aiPanelOpen);
+  document.getElementById('aiFabBadge').classList.remove('show');
+  if(aiPanelOpen) document.getElementById('aiInput').focus();
+}
+
+function toggleVoiceOut(){
+  voiceOutEnabled = !voiceOutEnabled;
+  const btn = document.getElementById('voiceOutToggle');
+  btn.classList.toggle('on', voiceOutEnabled);
+  btn.textContent = voiceOutEnabled ? '🔊' : '🔇';
+  if(!voiceOutEnabled) window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+/* ---------- rendering chat bubbles ---------- */
+function appendMsg(role, html){
+  const body = document.getElementById('aiBody');
+  const row = document.createElement('div');
+  row.className = 'ai-msg ' + role;
+  row.innerHTML = `
+    <div class="bubble-avatar">${role==='bot' ? '🤖' : '🧑'}</div>
+    <div class="ai-bubble">${html}</div>`;
+  body.appendChild(row);
+  body.scrollTop = body.scrollHeight;
+  return row;
+}
+
+function showTyping(){
+  const body = document.getElementById('aiBody');
+  const row = document.createElement('div');
+  row.className = 'ai-msg bot'; row.id = 'typingRow';
+  row.innerHTML = `<div class="bubble-avatar">🤖</div><div class="ai-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  body.appendChild(row); body.scrollTop = body.scrollHeight;
+}
+function hideTyping(){ const r = document.getElementById('typingRow'); if(r) r.remove(); }
+
+function aiSay(text, actionNoteList){
+  appendMsg('bot', text + (actionNoteList && actionNoteList.length ? actionNoteList.map(a=>`<div class="action-note">✓ ${a}</div>`).join('') : ''));
+  speak(text);
+  if(!aiPanelOpen) document.getElementById('aiFabBadge').classList.add('show');
+}
+
+function aiSayKb(text, tag){
+  appendMsg('bot', text + `<div class="kb-tag">🎓 ${tag}</div>`);
+  speak(text);
+  if(!aiPanelOpen) document.getElementById('aiFabBadge').classList.add('show');
+}
+
+function sendQuick(text){
+  document.getElementById('aiInput').value = text;
+  sendAiMessage();
+}
+
+function sendAiMessage(){
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if(!text) return;
+  appendMsg('user', escapeHtml(text));
+  input.value = '';
+  showTyping();
+  setTimeout(()=>{ hideTyping(); handleAgentIntent(text); }, 500 + Math.random()*400);
+}
+
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function stripTags(s){ return s.replace(/<[^>]*>/g,''); }
+
+/* ---------- UNIVERSITY FAQ KNOWLEDGE BASE ---------- */
+const universityKB = [
+  { tag:'Courses & Programs', test:/\b(course|courses|program|programme|degree|branch|stream|specialisation|specialization)\b/,
+    answer:"JSPM University offers undergraduate programs like B.Tech, BCA, BBA, B.Com, B.Sc, B.Pharm, B.Ed and BA (including BA LLB); postgraduate programs like M.Tech, MBA, MCA, M.Sc, M.Pharm, M.Ed, MA and M.Com; plus PhD across Engineering, Management, Sciences, Pharmacy, Law, Humanities and Computer Applications. In this app's own data model, the Computer Engineering, IT, and AI & Data Science departments are the ones with digitised labs." },
+
+  { tag:'Higher Study', test:/\b(higher stud(y|ies)|higher education|further stud(y|ies)|masters|do (i|we) need a (pg|masters)|after (b\.?tech|graduation|ug|bca|bba))\b/,
+    answer:"After a UG degree, typical paths are an M.Tech/MCA/MSc (for engineering/science backgrounds) or an MBA (for management-track students), followed by a PhD if you want to go into research or academia. For PhD admission, JSPM University runs an entrance test plus interview — candidates who've already qualified NET, SET, GATE or GPAT are exempted from the entrance test but still need the interview. There's also a Central Research Facility supporting PhD research work." },
+
+  { tag:'Education Loan', test:/\b(education loan|study loan|bank loan|loan|emi|finance my fee|financing)\b/,
+    answer:"As a UGC-approved university, JSPM University's programs should be eligible for standard education loan schemes from most nationalised and private banks (e.g. under RBI's model education loan guidelines), typically covering tuition, hostel and other costs against collateral or a co-applicant depending on the loan amount. For the actual paperwork — fee-structure certificate, admission letter, bank tie-ups if any — it's best to check directly with the JSPM University admissions/accounts office rather than assume specific bank names." },
+
+  { tag:'Campus & Locations', test:/\b(location|located|address|campus|where is|how far|directions|map)\b/,
+    answer:"The main academic campus is JSPM University at Wagholi, Pune. There's also a separate Corporate Office at Sawant Corner, S.No 84/2E/1/5, 3rd Floor, Katraj Chowk, Katraj, Pune 411046 — that's the administrative address, not the teaching campus. Use the 'Maps & Directions' link in the footer for exact directions to whichever location you need." },
+
+  { tag:'Course Duration', test:/\b(duration|how long|how many years|semester)\b/,
+    answer:"Typical durations: most UG degrees (BBA, B.Com, BCA, B.Sc, BA) run 3 years, while B.Tech and B.Pharm run 4 years. PG degrees like MBA, M.Tech, MCA and M.Sc are usually 2 years. PhD is a minimum of 3 years of research, often longer depending on the thesis. Diploma and certificate programs are shorter, generally under 2 years." },
+
+  { tag:'Campus Facilities', test:/\b(facilit(y|ies)|hostel|library|sports|gym|cafeteria|canteen|medical|infrastructure|amenit(y|ies)|wifi|internet)\b/,
+    answer:"Reported campus facilities include separate boys' and girls' hostels, a library, seminar halls and an auditorium, indoor and outdoor sports facilities, a gym, a cafeteria, a medical and health centre, and banking/ATM access. On the academic side — which is exactly what this SmartLab Manager app is built to track — there are dedicated computer, networking and research labs across departments." },
+
+  { tag:'Admissions', test:/\b(admission|entrance exam|how (do|can) i apply|eligibility|jee|cet|cat\b|mat\b|gmat|apply)\b/,
+    answer:"Admission routes vary by program: diploma and some UG courses go by merit, while B.Tech typically requires JEE Main or MHT-CET, and MBA typically considers CAT, MAT, CMAT or GMAT scores. To apply: visit the official JSPM University website, use the 'Apply Now' link, fill the application form, pick your program, and check you meet that program's eligibility criteria (usually 50%+ in the qualifying exam, varies by course)." },
+
+  { tag:'Placements', test:/\b(placement|package|recruiter|salary|job|hiring|ctc)\b/,
+    answer:"Placement reports mention 1,600+ offers facilitated with 150+ recruiting companies engaged, and recruiters cited include Infosys, Wipro, TCS, Capgemini and Microsoft, with BCA graduates reportedly seeing some of the strongest packages. Like most universities, placement isn't guaranteed for every student — the university says it also provides career guidance for those still job-hunting after the main placement season." },
+
+  { tag:'Fees', test:/\b(fee|fees|cost|tuition)\b/,
+    answer:"Reported total course fees span a wide range — roughly ₹95,000 up to about ₹7.98 lakh depending on the program (for example, B.Tech is reported around ₹4.5–6 lakh total, MBA around ₹1.6 lakh). These figures shift with each admission cycle, so treat this as a ballpark and confirm the current fee structure directly with the admissions office before budgeting." },
+
+  { tag:'Accreditation', test:/\b(ugc|aicte|naac|nirf|ariia|accredit|approved|recognition|ranking|rank)\b/,
+    answer:"JSPM University is reported as UGC-approved, with AICTE recognition applicable to its engineering/technical programs, and was placed in the 151–200 band in one recent NIRF engineering ranking cycle. For the authoritative, up-to-date certificates, use the NAAC, NIRF and ARIIA links in the footer of this app — those pull from the university's own compliance pages." },
+
+  { tag:'Contact & Apply', test:/\b(contact|phone number|email|write to us|reach|admission office|call)\b/,
+    answer:"You can reach JSPM University's corporate office at 020-24317383/84/85, or use the 'Write to us' and 'Apply Now' links in the footer of this app for the fastest response from admissions." },
+];
+
+/* ---------- AGENTIC INTENT ENGINE ----------
+   1) Lab-operations intents drive the app directly (tabs, labs, complaints).
+   2) University FAQ intents answer from the knowledge base above.
+   Both are always checked — mode just changes the default suggestion chips
+   and the greeting, not what the assistant is able to answer. */
+function handleAgentIntent(raw){
+  const t = raw.toLowerCase();
+
+  // ---- 1. Dashboard summary ----
+  if(/dashboard|summary|overview|how many (working|systems|labs)/.test(t)){
+    if(!roleConfig[currentRole].tabs.includes('dashboard')){
+      aiSay("Your current role (" + roleConfig[currentRole].label + ") doesn't have dashboard access, but here's the headline data anyway:");
+    } else { showTab('dashboard'); }
+    const labs = Object.values(labDetails);
+    const working = labs.reduce((s,l)=>s+l.working,0);
+    const nonworking = labs.reduce((s,l)=>s+l.nonworking,0);
+    const pending = complaints.filter(c=>c.status!=='Completed').length;
+    aiSay(`Across ${labs.length} labs: ${working} systems working, ${nonworking} down, and ${pending} open complaints right now.`, ['Opened Dashboard tab']);
+    return;
+  }
+
+  // ---- 2. Pending / filtered complaints ----
+  if(/pending complaint|open complaint|show complaint|complaint list/.test(t)){
+    showTab('complaints');
+    document.getElementById('filterStatus').value = /pending/.test(t) ? 'Pending' : 'all';
+    renderComplaints();
+    const count = complaints.filter(c=> /pending/.test(t) ? c.status==='Pending' : true).length;
+    aiSay(`Here are the complaints — ${count} match. Highest priority right now: ${highestPriorityComplaint()}.`, ['Opened Complaints tab', 'Applied filter']);
+    return;
+  }
+
+  // ---- 3. Advance a specific complaint ----
+  const cmpMatch = t.match(/cmp-?(\d{3,5})/i);
+  if(cmpMatch && /advance|complete|resolve|progress|assign|update/.test(t)){
+    const id = 'CMP-' + cmpMatch[1];
+    const c = complaints.find(x=>x.id.toUpperCase()===id.toUpperCase());
+    if(c){
+      showTab('complaints'); renderComplaints();
+      const before = c.status;
+      advanceComplaint(c.id);
+      aiSay(`Moved ${c.id} from "${before}" to "${c.status}".`, ['Updated complaint status']);
+    } else {
+      aiSay(`I couldn't find a complaint with ID ${id}. Try "show pending complaints" to see valid IDs.`);
+    }
+    return;
+  }
+
+  // ---- 4. Open a specific lab by name (fuzzy match) ----
+  const labNames = Object.keys(labDetails);
+  const foundLab = labNames.find(n => t.includes(n.toLowerCase())) ||
+                    labNames.find(n => n.toLowerCase().split(' ').some(w=>w.length>3 && t.includes(w)));
+  if(foundLab && /open|show|go to|view/.test(t)){
+    showTab('labs'); openLab(foundLab);
+    const l = labDetails[foundLab];
+    aiSay(`Opened ${foundLab} — ${l.working}/${l.pcs} systems working, incharge ${l.incharge}.`, ['Navigated to Labs tab', 'Opened asset detail']);
+    return;
+  }
+
+  // ---- 5. File a new complaint via natural language ----
+  if(/log a complaint|file a complaint|report an issue|new complaint|report a problem/.test(t)){
+    const inLab = labNames.find(n => t.includes(n.toLowerCase()));
+    let priority = /high/.test(t) ? 'High' : /low/.test(t) ? 'Low' : 'Medium';
+    let descMatch = raw.match(/about (.+?)(,|\.|$)/i);
+    const desc = descMatch ? descMatch[1].trim() : raw.replace(/.*(complaint|issue|problem)/i,'').trim() || 'Issue reported via AI Assistant';
+    if(inLab){
+      const newC = { id:'CMP-'+(1043+complaints.length+Math.floor(Math.random()*90)), lab:inLab, desc, priority, status:'Pending', date:new Date().toISOString().slice(0,10) };
+      complaints.unshift(newC);
+      try{ window.storage && window.storage.set('complaints', JSON.stringify(complaints)); }catch(e){}
+      showTab('complaints'); renderComplaints(); renderDashboard();
+      aiSay(`Filed ${newC.id} for ${inLab}: "${desc}" (${priority} priority).`, ['Created complaint record', 'Synced to Complaints tab']);
+    } else {
+      aiSay("Which lab is this for? For example: \"log a complaint in Web Tech Lab about projector not working\".");
+    }
+    return;
+  }
+
+  // ---- 6. Warranty / maintenance query (operational) ----
+  if(/warranty|expir/.test(t) && !/loan/.test(t)){
+    showTab('reports');
+    const soon = Object.entries(labDetails).flatMap(([name,l])=>l.assets.filter(a=>a.warranty==='Expiring soon').map(a=>name+' · '+a.asset));
+    aiSay(soon.length ? `${soon.length} asset(s) have warranties expiring soon: ${soon.join(', ')}.` : 'No assets currently show an expiring warranty.', ['Opened Reports tab']);
+    return;
+  }
+
+  // ---- 7. Requirements / purchase requests ----
+  if(/purchase request|procurement|requisition/.test(t)){
+    if(roleConfig[currentRole].tabs.includes('requirements')){ showTab('requirements'); }
+    const pendingReq = purchaseRequests.filter(p=>p.stage===0).length;
+    aiSay(`There are ${pendingReq} purchase request(s) awaiting approval out of ${purchaseRequests.length} total.`, roleConfig[currentRole].tabs.includes('requirements') ? ['Opened Purchase Requests tab'] : []);
+    return;
+  }
+
+  // ---- 8. Reports / export (operational) ----
+  if(/(export|pdf|excel) report|report export/.test(t)){
+    showTab('reports');
+    aiSay('Opened the Reports tab — pick any report card and export it as PDF or Excel.', ['Opened Reports tab']);
+    return;
+  }
+
+  // ---- 9. UNIVERSITY FAQ knowledge base ----
+  for(const entry of universityKB){
+    if(entry.test.test(t)){
+      aiSayKb(entry.answer, entry.tag);
+      return;
+    }
+  }
+
+  // ---- 10. Navigation fallback: "go to structure/labs/complaints" ----
+  for(const tab of Object.keys(tabLabels)){
+    if(t.includes(tab) && roleConfig[currentRole].tabs.includes(tab)){
+      showTab(tab);
+      aiSay(`Sure — here's ${tabLabels[tab]}.`, ['Navigated tab']);
+      return;
+    }
+  }
+
+  // ---- 11. Greetings / thanks ----
+  if(/^(hi|hello|hey|namaste)\b/.test(t)){ aiSay("Hello! Switch between Lab Operations and University FAQ above, or just ask — e.g. \"open Networking Lab\" or \"what courses do you offer?\"."); return; }
+  if(/thank/.test(t)){ aiSay("Anytime! I'm always on — just tap the mic or type."); return; }
+
+  // ---- Default fallback ----
+  aiSay("I'm not fully trained on that one yet in this prototype. Try a Lab Operations command like \"show dashboard summary\" or \"open Data Science Lab\", or switch to University FAQ mode and ask about courses, admissions, loans, facilities, or placements. In production, a real LLM (via the Anthropic API) would take over reasoning for anything outside this knowledge base.");
+}
+
+function highestPriorityComplaint(){
+  const open = complaints.filter(c=>c.status!=='Completed');
+  const high = open.find(c=>c.priority==='High');
+  return high ? `${high.id} (${high.lab})` : (open[0] ? `${open[0].id} (${open[0].lab})` : 'none open');
+}
+
+/* ---------- VOICE OUTPUT: text-to-speech ---------- */
+function speak(text){
+  if(!voiceOutEnabled || !('speechSynthesis' in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const clean = stripTags(text).replace(/[✓🤖🧑🎤🔊🔇🎓]/g,'');
+    const u = new SpeechSynthesisUtterance(clean);
+    u.rate = 1.02; u.pitch = 1; u.volume = 1;
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* speech synthesis unsupported — silently degrade */ }
+}
+
+/* ---------- VOICE INPUT: speech-to-text ---------- */
+function setupSpeechRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn = document.getElementById('micBtn');
+  if(!SR){
+    micBtn.style.opacity = '0.4';
+    micBtn.title = 'Voice input not supported in this browser';
+    micBtn.onclick = ()=> toast('Voice input needs Chrome/Edge with microphone access');
+    return;
+  }
+  recognizer = new SR();
+  recognizer.continuous = false;
+  recognizer.interimResults = false;
+  recognizer.lang = 'en-IN';
+
+  recognizer.onstart = ()=>{
+    isListening = true;
+    micBtn.classList.add('rec');
+    document.getElementById('aiFab').classList.add('listening');
+    document.getElementById('listenBanner').classList.add('show');
+  };
+  recognizer.onend = ()=>{
+    isListening = false;
+    micBtn.classList.remove('rec');
+    document.getElementById('aiFab').classList.remove('listening');
+    document.getElementById('listenBanner').classList.remove('show');
+  };
+  recognizer.onerror = (e)=>{
+    document.getElementById('listenBannerText').textContent = 'Mic error — try again';
+    toast('Voice input error: ' + (e.error || 'unknown'));
+  };
+  recognizer.onresult = (e)=>{
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('aiInput').value = transcript;
+    sendAiMessage();
+  };
+}
+
+function toggleMic(){
+  if(!recognizer) return;
+  if(isListening){ recognizer.stop(); return; }
+  if(!aiPanelOpen) toggleAiPanel();
+  try{ recognizer.start(); }catch(e){ /* already started */ }
+}
 </script>
 </body>
 </html>
